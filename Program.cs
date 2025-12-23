@@ -1,61 +1,64 @@
-﻿using Microsoft.VisualBasic;
+using System;
 
-Random random = new Random();
+namespace LittleGame;
 
-Console.WriteLine("Would you like to play? (Y/N)");
-string? result = Console.ReadLine();
-
-
-if (ShouldPlay(result)) 
+class Program
 {
-    PlayGame();
-}
+    private static readonly Random RandomGenerator = new Random();
 
-void PlayGame()
-{
-  var play = true;
-
-  while (play)
-  {
-    var target = random.Next(0,6);
-    var roll = random.Next(0,6);
-
-    Console.WriteLine($"Roll a number greater than {target} to win!");
-    Console.WriteLine($"You rolled a {roll}");
-    WinOrLose(target, roll);
-    Console.WriteLine("\nPlay again? (Y/N)");
-    string ? result2 = Console.ReadLine();
-    play = ShouldPlay(result2);
-  }
-}
-
-bool ShouldPlay(string result)
-{
-  if (result != null)
-  {
-    if (result.ToUpper().Equals("Y"))
+    static void Main(string[] args)
     {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
+        Console.WriteLine("Would you like to play? (Y/N)");
+        string? input = Console.ReadLine();
 
-void WinOrLose(int target, int roll)
-{
-  if (target >= roll)
-  {
-    Console.WriteLine("You lose!");
-  }
-  else if (roll > target)
-  {
-    Console.WriteLine("You win!");
-  }
+        if (ShouldPlay(input))
+        {
+            PlayGame();
+        }
+    }
+
+    private static void PlayGame()
+    {
+        bool isRunning = true;
+
+        while (isRunning)
+        {
+            int target = RandomGenerator.Next(1, 7); // Würfeltypisch 1-6
+            int roll = RandomGenerator.Next(1, 7);
+
+            Console.WriteLine($"\nRoll a number greater than {target} to win!");
+            Console.WriteLine($"You rolled a {roll}");
+            
+            PrintResult(target, roll);
+
+            Console.WriteLine("\nPlay again? (Y/N)");
+            string? response = Console.ReadLine();
+            isRunning = ShouldPlay(response);
+        }
+    }
+
+    private static bool ShouldPlay(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return false;
+        }
+        
+        return input.Trim().ToUpper() == "Y";
+    }
+
+    private static void PrintResult(int target, int roll)
+    {
+        if (roll > target)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("You win!");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("You lose!");
+        }
+        Console.ResetColor();
+    }
 }
